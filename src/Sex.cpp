@@ -1,0 +1,14 @@
+#include "../include/Sex.h"
+
+inline std::ostream& operator<<(std::ostream& out, const Sex& sex)
+{
+    if (sex == Sex::FEMALE)
+    {
+        out << "female";
+    }
+    else // if (sex == Sex::MALE)
+    {
+        out << "male";
+    }
+    return out;
+}

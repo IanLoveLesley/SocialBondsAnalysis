@@ -30,22 +30,22 @@ MyString &MyString::operator=(const MyString &other) {
 
 }
 
-int MyString::getLength() const {
+inline int MyString::getLength() const {
     return length;
 }
-const char* MyString::getData() const {
+inline const char* MyString::getData() const {
     return data;
 }
 
 bool MyString::operator==(const MyString& other) const{
-    int judge=1;
+    int judge= true; // 先默认为true，只要遇到任何足以否定的依据就改为false
     if (length != other.length) {
-        judge=0;
+        judge=false;
     }
     else {
         for (int i = 0; i < length; i++) {
             if (data[i] != other.data[i]) {
-                judge=0;
+                judge=false;
                 break;
             }
         }
