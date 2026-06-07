@@ -1,3 +1,6 @@
+// created by corn on June 6, 2026
+
+#pragma once
 #include <iostream>
 
 enum class Sex: char

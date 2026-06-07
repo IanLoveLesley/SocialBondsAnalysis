@@ -1,3 +1,5 @@
+// created by corn on June 6, 2026
+
 #include "../include/Sex.h"
 
 inline std::ostream& operator<<(std::ostream& out, const Sex& sex)
