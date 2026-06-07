@@ -10,6 +10,7 @@ class MyVector {
     T *data;
     int capacity;
     int size;
+    
     public:
     MyVector() {
         size = 0;
@@ -19,16 +20,18 @@ class MyVector {
     ~MyVector() {
         delete[] data;
     }
-    int getSize()const {
+
+    inline int getSize()const {
         return size;
     }
+
     T& operator[](int index) {
         return data[index];
     }
-
     const T& operator[](int index) const {
         return data[index];
     }
+
     void push_back(const T& item) {
         if (size == capacity) {
             capacity *= 2;

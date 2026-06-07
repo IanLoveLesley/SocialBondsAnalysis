@@ -9,6 +9,7 @@
 
 class MyString {
     char *data;
+    // 不包括末尾的'\0'
     int length;
     public:
     MyString();

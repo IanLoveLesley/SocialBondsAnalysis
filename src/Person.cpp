@@ -2,16 +2,18 @@
 // Created by Ian on 2026/6/3.
 //
 
+#pragma once
 #include "../include/Person.h"
-#include <iostream>
+#include "../include/Sex.h"
 
 Person::Person() {
     id = -1;
-    sex = 0;
+    // 应用enum class时需要注意，作用域外访问枚举值需要加上作用域限定符
+    sex = Sex::FEMALE;
     age = 0;
 }
 
-Person::Person(int id, const char *name, int sex, int age, const char *job) {
+Person::Person(int id, const char *name, Sex sex, int age, const char *job) {
     this->id = id;
     this->name = name;
     this->sex = sex;
@@ -32,7 +34,7 @@ int Person::getId() const {
     return id;
 }
 
-int Person::getSex() const {
+Sex Person::getSex() const {
     return sex;
 }
 

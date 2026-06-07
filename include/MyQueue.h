@@ -11,7 +11,7 @@ struct ListNode {
     ListNode* next;
     ListNode(T data) {
         this->data = data;
-        this->next = NULL;
+        this->next = nullptr;
     }
 };
 template <class T>
@@ -26,8 +26,14 @@ class MyQueue {
         size = 0;
     }
     ~MyQueue() {
-        while (head != nullptr) {
-            ListNode<T>* temp = head;
+        // while (head != nullptr) {
+        //     ListNode<T>* temp = head;
+        //     head = head->next;
+        //     delete temp;
+        // }
+        // temp变量只进行一次初始化，减少时间和空间开销
+        for (ListNode<T>* temp = head; head != nullptr; )
+        {
             head = head->next;
             delete temp;
         }
@@ -60,16 +66,18 @@ class MyQueue {
             }
         }
     }
-    T& front() {
+    // 取出队头数据和弹走队头数据分为两个步骤，这个是取出队头数据
+    // 调用时需要指明是否为 const
+    inline T& front() {
         return head->data;
     }
-    const T& front() const {
+    inline const T& front() const {
         return head->data;
     }
-    bool isEmpty() const {
+    inline bool isEmpty() const {
         return head == nullptr;
     }
-    int getSize() const {
+    inline int getSize() const {
         return size;
     }
 };
