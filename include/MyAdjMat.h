@@ -3,6 +3,7 @@
 
 #include "MyQueue.h"
 #include "MyVector.h"
+#include <stdexcept>
 
 // 模板类的代码必须写在h文件中
 template <typename T, T diag_default_value>
@@ -35,11 +36,11 @@ public:
     {
         if (a == b)
         {
-            throw("不允许修改对角元的值");
+            throw std::logic_error("不允许访问对角元的值");
         }
         else if (a < 0 || b < 0 || a >= sideLength || b >= sideLength)
         {
-            throw("不允许越界访问");
+            throw std::logic_error("不允许越界访问");
         }
         else // max为行，min为列
         {
@@ -91,7 +92,7 @@ MyAdjMat<T, diag_default_value>::~MyAdjMat()
 }
 
 
-// 运用 bfs 算法
+// 运用 bfs 算法，这是整个项目的核心
 template <typename T, T diag_default_value>
 void MyAdjMat<T, diag_default_value>::build_connected_adjmat(MyAdjMat<T, diag_default_value> &output)
 {
@@ -104,47 +105,36 @@ void MyAdjMat<T, diag_default_value>::build_connected_adjmat(MyAdjMat<T, diag_de
 
     if (this->has_done == false)
     {
-        throw("现在该矩阵还未完成，不能搭建 connected_adjmat ！");
-        return;
+        throw std::logic_error("现在该矩阵还未完成，不能搭建 connected_adjmat ！");
     }
 
-    if (output.get_has_done == true)
+    if (output.get_has_done() == true)
     {
-        output.get_has_done = false;
+        output.get_has_done() = false;
     }
     // int 存储用户编号
     MyQueue<int> open;
     // 用 MyVector<NodeState> node_state 构造closed表，空间换时间，同时使逻辑简单
     MyVector<NodeState> node_state(sideLength, NodeState::Unvisited);
-    // MyVector<int> closed;           // 同一个“相连朋友圈搜索”中，已经探索过的节点
-    // MyVector<int> different_circle; // 之前几轮“相连朋友圈搜索”中的节点，其必然不属于当前正在探索的朋友圈
 
-    // 负责在下面的循环中更新多个变量
-    auto renew_start = [&is_search_done, &start, &different_circle]() -> void 
-    {
-        for (int i = 0; i < sideLength; i++)
-        {
-            if (!different_circle.has(i))
-            {
-                start = i;
-                return;
-            }
-        }
-        // 如果执行到这里就说明没有可行的start值了
-
-        is_search_done = true;
-    };
-
-    bool is_search_done = false; // 说明不再有可行的start值
     // 每次循环进行一个“相连朋友圈”的完整搜索
-    // 各层用for循环，直接写好不得不写的初始化、循环条件和状态转移
-    for (int start = 0; !is_search_done; renew_start())
-    // 关于状态转移：既然清空的时间开销很小，我们就直接清空closed表。毕竟数据都add到different_circle中了
+    // 各层用循环，直接写好初始化、循环条件和状态转移
+    for (int start = 0; start < sideLength; start++)
     {
+        // 不是合适起点就跳过，用这种简单逻辑就可实现start的更新
+        if (node_state[start] != NodeState::Unvisited)
+            continue;
+        
         open.push(start);
-        for (int curr = start; !open.isEmpty(); curr = open.front(), open.pop()) // 先取数据再弹出
+        node_state[start] = NodeState::InCurrentCircle; // 遵循下面的规则。但这是初始化，因此必须补上
+
+        while(!open.isEmpty())
         {
-            // i 一定要遍历整个 sideLength？
+            int curr = open.front();
+            open.pop(); // 队头数据已经失去利用价值（或者说已经转移到curr中），必须弹出
+            // 如果这一步以后队列已经空了，那么整个循环体会执行完，然后跳出
+
+            // i 一定要遍历整个 sideLength 吗？
             for (int i = 0; i < sideLength; i++)
             {
                 // 如果探索与自己的关系那么就什么都不做
@@ -154,22 +144,26 @@ void MyAdjMat<T, diag_default_value>::build_connected_adjmat(MyAdjMat<T, diag_de
                     output.set_element(i, curr, false);
                 else if (node_state[i] == NodeState::InCurrentCircle)
                     output.set_element(i, curr, true);
-                // 如果是邻居且不在closed中，那么要进入open表；如果不是邻居且不在closed表中，那么什么都不知道
+                // 如果是邻居且未探究过，那么要进入open表，且必然相连；
+                // 如果i节点未探索过，那么什么都不知道，这一关系在当前i节点后续程序中成为curr节点时才能得以知晓
                 else if (this->get_element(i, curr) == true) // && node_state[i] == NodeState::Unvisited
                 {
                     output.set_element(i, curr, true);
+                    // 只有未探索过的节点才能被push进open表中
                     open.push(i);
+
+                    // 入队以后元素就已经是closed了（InCurrentCircle）
+                    // 如果不这样规定：若open表中排在前位的元素也与这个新推入的元素相连，那么该元素必然被重复推入open表中
+                    // 这意味着后面 每一个 curr 状态都是 InCurrentCircle， 因此之前的curr的状态设置可以删掉了
+                    node_state[i] = NodeState::InCurrentCircle;
                 }
             }
-
-            // 状态转移一部分：当前关注的节点 curr 状态改为 InCurrentCircle
-            node_state[i] = NodeState::InCurrentCircle;
         }
 
         // 这一部分负责状态转移 ：当前朋友圈对于下一次探索来说是别的朋友圈
         for (int i = 0; i < sideLength; i++)
         {
-            if (node_state[i] = NodeState::InCurrentCircle)
+            if (node_state[i] == NodeState::InCurrentCircle)
             {
                 node_state[i] = NodeState::InDifferentCircle;
             }
