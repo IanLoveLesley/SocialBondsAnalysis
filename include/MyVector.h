@@ -5,6 +5,8 @@
 #ifndef SOCIALBONDSANALYSIS_MYVECTOR_H
 #define SOCIALBONDSANALYSIS_MYVECTOR_H
 
+#include <algorithm> // 需要 std::fill_n
+
 template <class T>
 class MyVector {
     T *data;
@@ -16,6 +18,13 @@ class MyVector {
         size = 0;
         capacity = 256;
         data = new T[capacity];
+    }
+    MyVector(int size, T original_value)
+    {
+        this->size = this->capacity = size;
+        data = new T[capacity];
+        // 将每一处数据都设置为 original_value
+        std::fill_n(data, size, original_value);
     }
     ~MyVector() {
         delete[] data;
@@ -71,6 +80,28 @@ class MyVector {
         }
 
         return *this;
+    }
+
+    bool has(T target)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            if (data[i] == target)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    inline void clear(){size = 0;} // 只需一步；彻底放弃垃圾数据
+
+    void add(MyVector<T> &source)
+    {
+        for (int i = 0; i < source.getSize(); i++)
+        {
+            push_back(source[i]);
+        }
     }
 };
 

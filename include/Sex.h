@@ -2,8 +2,9 @@
 
 #pragma once
 #include <iostream>
+#include <cstdint>
 
-enum class Sex: char
+enum class Sex: uint8_t
 {
     FEMALE = 0,
     MALE = 1,
