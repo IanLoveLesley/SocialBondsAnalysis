@@ -4,9 +4,28 @@
 
 #include "../include/SocialNetwork.h"
 
-SocialNetwork::SocialNetwork(int num_of_users_) : num_of_users(num_of_users_), is_neighbor(num_of_users_), is_connected(num_of_users_) {}
+SocialNetwork::SocialNetwork(int num_of_users_) : num_of_users(num_of_users_), is_neighbor(num_of_users_), is_connected(num_of_users_)
+{
+    build_is_connected();
+}
 
 SocialNetwork::~SocialNetwork()
 {
-    is_connected.~MyAdjMat; // 将矩阵析构掉。我不写它是否也会被调用？
+    is_neighbor.~MyAdjMat();
+    is_connected.~MyAdjMat(); // 将矩阵析构掉。我不写它是否也会被调用？
+}
+
+bool SocialNetwork::is_user_connected(int user_0, int user_1)
+{
+    if (!is_neighbor.get_has_done())
+    {
+        throw std::logic_error("请先将is_neighbor矩阵设置好！");
+    }
+
+    if (!is_connected.get_has_done())
+    {
+        build_is_connected();
+    }
+
+    return is_connected.get_element(user_0, user_1);
 }

@@ -2,6 +2,7 @@
 // Created by Ian on 2026/6/3.
 //
 
+// 这个类可能会被废掉
 #ifndef SOCIALBONDSANALYSIS_MYSTRING_H
 #define SOCIALBONDSANALYSIS_MYSTRING_H
 #include <cstring>

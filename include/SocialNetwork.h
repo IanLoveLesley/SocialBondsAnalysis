@@ -5,13 +5,14 @@
 #ifndef SOCIALBONDSANALYSIS_SOCIALNETWORK_H
 #define SOCIALBONDSANALYSIS_SOCIALNETWORK_H
 
+#include <stdexcept>
 #include "Person.h"
 #include "MyQueue.h"
 #include "MyString.h"
 #include "MyVector.h"
 #include "MyAdjMat.h"
 
-typedef MyAdjMat<bool, true> CurrAdjMat; // 便于一次性修改，如对角元需要从true 变为false 时
+using CurrAdjMat = MyAdjMat<bool, true, false>; // 增加一个抽象层，便于修改和维护；同时提高代码可读性
 
 class SocialNetwork
 {
@@ -26,12 +27,13 @@ public:
 
     // 根据不同依据建立is_neighbor的函数（todo）（false 2 true）
 
-    // 寻找整张图的连接关系，根据is_neighbor 建立 is_connected （false 2 ture）
-    void build_is_connected();
+    // 寻找整张图的连接关系，根据is_neighbor 建立 is_connected
+    inline void build_is_connected() { is_neighbor.build_connected_adjmat(is_connected); }
 
     // 服务于图结构表示的接口（todo）
 
-    // 确认任意两个用户是否连接的搜索接口
+    // 因为该函数可能会要求is_neighbor矩阵生成is_connected矩阵，所以该函数末尾不写const
+    bool is_user_connected(int, int);
 
 private:
     int num_of_users;
