@@ -15,7 +15,7 @@ SocialNetwork::~SocialNetwork()
     is_connected.~MyAdjMat(); // 将矩阵析构掉。我不写它是否也会被调用？
 }
 
-bool SocialNetwork::is_user_connected(int user_0, int user_1)
+bool SocialNetwork::is_users_connected(int user_0, int user_1)
 {
     if (!is_neighbor.get_has_done())
     {
@@ -28,4 +28,14 @@ bool SocialNetwork::is_user_connected(int user_0, int user_1)
     }
 
     return is_connected.get_element(user_0, user_1);
+}
+
+bool SocialNetwork::is_users_neighbors(int user_0, int user_1)
+{
+    if (!is_neighbor.get_has_done())
+    {
+        throw std::logic_error("请先将is_neighbor矩阵设置好！");
+    }
+
+    return is_neighbor.get_element(user_0, user_1);
 }

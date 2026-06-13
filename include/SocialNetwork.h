@@ -33,7 +33,8 @@ public:
     // 服务于图结构表示的接口（todo）
 
     // 因为该函数可能会要求is_neighbor矩阵生成is_connected矩阵，所以该函数末尾不写const
-    bool is_user_connected(int, int);
+    bool is_users_connected(int, int);
+    bool is_users_neighbors(int, int);
 
 private:
     int num_of_users;
