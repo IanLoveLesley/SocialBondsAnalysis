@@ -11,8 +11,8 @@ template <typename T, T diag_default_value, T original_edge_value>
 class MyAdjMat
 {
     // 通过 typedef 提高代码可读性
-    typedef T *Ptrlevel1;
-    typedef T **Ptrlevel2;
+    using Ptrlevel1 = T *;
+    using Ptrlevel2 = T **;
 
 public:
     MyAdjMat(int sideLength);
@@ -67,7 +67,7 @@ public:
             row = a > b ? a : b;
             column = a < b ? a : b;
         }
-        
+
         data[row][column] = value;
     }
 
