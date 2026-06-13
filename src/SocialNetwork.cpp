@@ -4,10 +4,8 @@
 
 #include "../include/SocialNetwork.h"
 
-SocialNetwork::SocialNetwork(int num_of_users_) : num_of_users(num_of_users_), is_neighbor(num_of_users_), is_connected(num_of_users_)
-{
-    build_is_connected();
-}
+// 因为矩阵还没初始化好，所以不能直接 build_is_connected()
+SocialNetwork::SocialNetwork(int num_of_users_) : num_of_users(num_of_users_), is_neighbor(num_of_users_), is_connected(num_of_users_) {}
 
 SocialNetwork::~SocialNetwork()
 {
