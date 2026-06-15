@@ -27,7 +27,7 @@ public:
 
     void push_user(Person source) { user_list.push_back(std::move(source)); }
     // 根据不同依据建立is_neighbor的函数（todo）（false 2 true）
-    void neighbors_matrix_done() {}
+    void neighbors_matrix_done() { is_neighbor.get_has_done() = true; }
 
     // 寻找整张图的连接关系，根据is_neighbor 建立 is_connected
     inline void build_is_connected() { is_neighbor.build_connected_adjmat(is_connected); }
