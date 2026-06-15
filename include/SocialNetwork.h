@@ -25,12 +25,19 @@ public:
     SocialNetwork(const SocialNetwork &) = delete;
     SocialNetwork &operator=(const SocialNetwork &) = delete;
 
+    void push_user(Person source) { user_list.push_back(std::move(source)); }
     // 根据不同依据建立is_neighbor的函数（todo）（false 2 true）
+    void neighbors_matrix_done() {}
 
     // 寻找整张图的连接关系，根据is_neighbor 建立 is_connected
     inline void build_is_connected() { is_neighbor.build_connected_adjmat(is_connected); }
 
-    // 服务于图结构表示的接口（todo）
+    // 服务于图结构表示的接口： 暂定直接返回整个is_neighbor矩阵的引用
+    const CurrAdjMat& get_neighbor_matrix() const { return is_neighbor; }
+    const CurrAdjMat& get_connected_matrix() const { return is_connected; }
+    // 不允许直接操作；只允许通过 SocialNetwork类提供的接口操作
+    CurrAdjMat& get_neighbor_matrix() = delete; 
+    CurrAdjMat& get_connected_matrix() = delete;
 
     // 因为该函数可能会要求is_neighbor矩阵生成is_connected矩阵，所以该函数末尾不写const
     bool is_users_connected(int, int);

@@ -1,0 +1,5 @@
+class CliInterface
+{
+public:
+private:
+};

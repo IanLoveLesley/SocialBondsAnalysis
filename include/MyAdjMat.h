@@ -33,43 +33,9 @@ public:
 
     // 最小数字为0，最大数字为sideLength - 1
     // 这个const必须写在参数表后面
-    const T &get_element(int a, int b) const
-    {
-        int row, column;
-        if (a == b)
-        {
-            throw std::logic_error("不允许访问对角元的值");
-        }
-        else if (a < 0 || b < 0 || a >= sideLength || b >= sideLength)
-        {
-            throw std::logic_error("不允许越界访问");
-        }
-        else // max行，min列
-        {
-            row = a > b ? a : b;
-            column = a < b ? a : b;
-        }
-        return data[row][column];
-    }
-    void set_element(int a, int b, T value)
-    {
-        int row, column;
-        if (a == b)
-        {
-            throw std::logic_error("不允许访问对角元的值");
-        }
-        else if (a < 0 || b < 0 || a >= sideLength || b >= sideLength)
-        {
-            throw std::logic_error("不允许越界访问");
-        }
-        else // max行，min列
-        {
-            row = a > b ? a : b;
-            column = a < b ? a : b;
-        }
+    const T &get_element(int a, int b) const;
 
-        data[row][column] = value;
-    }
+    void set_element(int a, int b, T value);
 
     // 这个函数是整个项目的核心，运用 bfs 算法。目前 bfs 和给元素赋值的操作是未解耦的。
     void build_connected_adjmat(MyAdjMat<T, diag_default_value, original_edge_value> &output);
@@ -106,6 +72,46 @@ MyAdjMat<T, diag_default_value, original_edge_value>::~MyAdjMat()
         delete[] data[i];
     }
     delete[] data;
+}
+
+template <typename T, T diag_default_value, T original_edge_value>
+const T &MyAdjMat<T, diag_default_value, original_edge_value>::get_element(int a, int b) const
+{
+    int row, column;
+    if (a == b)
+    {
+        throw std::logic_error("不允许访问对角元的值");
+    }
+    else if (a < 0 || b < 0 || a >= sideLength || b >= sideLength)
+    {
+        throw std::logic_error("不允许越界访问");
+    }
+    else // max行，min列
+    {
+        row = a > b ? a : b;
+        column = a < b ? a : b;
+    }
+    return data[row][column];
+}
+template <typename T, T diag_default_value, T original_edge_value>
+void MyAdjMat<T, diag_default_value, original_edge_value>::set_element(int a, int b, T value)
+{
+    int row, column;
+    if (a == b)
+    {
+        throw std::logic_error("不允许访问对角元的值");
+    }
+    else if (a < 0 || b < 0 || a >= sideLength || b >= sideLength)
+    {
+        throw std::logic_error("不允许越界访问");
+    }
+    else // max行，min列
+    {
+        row = a > b ? a : b;
+        column = a < b ? a : b;
+    }
+
+    data[row][column] = value;
 }
 
 template <typename T, T diag_default_value, T original_edge_value>
