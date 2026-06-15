@@ -3,14 +3,24 @@
 //
 
 #include "../include/SocialNetwork.h"
+#include <stdexcept>
 
 // 因为矩阵还没初始化好，所以不能直接 build_is_connected()
-SocialNetwork::SocialNetwork(int num_of_users_) : num_of_users(num_of_users_), is_neighbor(num_of_users_), is_connected(num_of_users_) {}
+SocialNetwork::SocialNetwork(int num_of_users_) : user_count(num_of_users_), is_neighbor(num_of_users_), is_connected(num_of_users_) {}
 
 SocialNetwork::~SocialNetwork()
 {
     is_neighbor.~MyAdjMat();
     is_connected.~MyAdjMat(); // 将矩阵析构掉。我不写它是否也会被调用？
+}
+
+void SocialNetwork::push_user(Person source)
+{
+    if (source.getAge() < 0)
+    {
+        throw std::invalid_argument("年龄必须是大于等于0的整数");
+    }
+    user_list.push_back(std::move(source));
 }
 
 bool SocialNetwork::is_users_connected(int user_0, int user_1)

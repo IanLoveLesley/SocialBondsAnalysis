@@ -25,9 +25,20 @@ public:
     SocialNetwork(const SocialNetwork &) = delete;
     SocialNetwork &operator=(const SocialNetwork &) = delete;
 
-    void push_user(Person source) { user_list.push_back(std::move(source)); }
-    // 根据不同依据建立is_neighbor的函数（todo）（false 2 true）
+    const int get_user_count() const { return user_count; }
+
+    void push_user(Person source);
+
+    // 根据不同依据建立is_neighbor的函数
+
+    enum class Mode
+    {
+    };
+    void define_relationship();
+
     void neighbors_matrix_done() { is_neighbor.get_has_done() = true; }
+    // is_neighbor矩阵被改动，则is_connected矩阵自然失效
+    void neighbors_matrix_not_done() { is_neighbor.get_has_done() = is_connected.get_has_done() = false; }
 
     // 寻找整张图的连接关系，根据is_neighbor 建立 is_connected
     inline void build_is_connected() { is_neighbor.build_connected_adjmat(is_connected); }
@@ -44,7 +55,7 @@ public:
     bool is_users_neighbors(int, int);
 
 private:
-    int num_of_users;
+    int user_count;
     CurrAdjMat is_neighbor, is_connected;
     MyVector<Person> user_list;
 };
