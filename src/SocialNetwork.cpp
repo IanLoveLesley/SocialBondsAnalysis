@@ -47,3 +47,24 @@ bool SocialNetwork::is_users_neighbors(int user_0, int user_1)
 
     return is_neighbor.get_element(user_0, user_1);
 }
+
+void SocialNetwork::change_relationship(int a, int b, bool value)
+{
+    if (is_neighbor.get_has_done()) // 如果是已经做好的即不能修改的
+    {
+        throw std::logic_error("不能修改不可修改的矩阵");
+    }
+    else if (a < 0 || a >= user_count || b < 0 || b >= user_count)
+    {
+        throw std::logic_error("访问越界：不能改变范围之外的用户！");
+    }
+    else if (a == b)
+    {
+        throw std::logic_error("不能改变邻接矩阵内部同一用户的数值");
+    }
+    else
+    {
+        is_neighbor.set_element(a, b, value);
+        is_neighbor.get_has_done() = true;
+    }
+}

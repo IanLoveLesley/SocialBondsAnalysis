@@ -29,12 +29,19 @@ public:
 
     void push_user(Person source);
 
+    // 按照在列表内的顺序查找
+    const Person &get_user(int number) const { return user_list[number]; }
+    Person &set_user(int number) { return user_list[number];}
+
     // 根据不同依据建立is_neighbor的函数
 
     enum class Mode
     {
     };
     void define_relationship();
+
+    // 允许修改值与原值相等
+    void change_relationship(int a, int b, bool value);
 
     void neighbors_matrix_prepared() { is_neighbor.get_has_done() = true; }
     // is_neighbor矩阵被改动，则is_connected矩阵自然失效

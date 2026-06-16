@@ -32,18 +32,39 @@ Person::Person(int id,MyString name,Sex sex, int age, MyString job)
 int Person::getAge() const {
     return age;
 }
+void Person::setAge(int age)
+{
+    this->age = age;
+}
+
 const char* Person::getName() const {
      return name.getData();
+}
+
+void Person::setName(const char* name)
+{
+    this->name = name;
 }
 const char* Person::getJob() const {
     return job.getData();
 }
+void Person::setJob(const char* job)
+{
+    this->job = job;
+}
 int Person::getId() const {
     return id;
+}
+void Person::setId(int id) {
+    this->id = id;
 }
 
 Sex Person::getSex() const {
     return sex;
+}
+void Person::setSex(Sex sex)
+{
+    this->sex = sex;
 }
 
 void Person::printInfo() const {

@@ -22,6 +22,13 @@ class Person {
     int getAge() const;
     const char* getName() const;
     const char* getJob() const;
+
+    void setId(int id);
+    void setSex(Sex sex);
+    void setAge(int age);
+    void setName(const char* name);
+    void setJob(const char* job);
+
     void printInfo() const;
 };
 
