@@ -8,6 +8,9 @@ project(SocialNetworkAnalysis)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# 指定字符集为 UTF-8 ，防止乱码
+add_compile_options(-finput-charset=UTF-8 -fexec-charset=UTF-8)
+
 # 指定头文件的搜索目录
 include_directories(include)
 

@@ -157,7 +157,9 @@ void CliInterface::print_is_connected_matrix() const
 
 CliInterface::MainMenuChoice CliInterface::get_user_menu_choice()
 {
-    int8_t temp;
+    // <cstdint> 中 int8_t 是 signed_char ，这意味着如果输入1，则会被处理为49
+    // 因此必须改成int才能正确处理输入。
+    int temp;
     while (true)
     {
         cout << "请选择您的操作" << endl;
@@ -282,7 +284,7 @@ void CliInterface::define_relationship_need_rebuild_connected()
     print_menu_choice<RelationshipDefMethod>(RelationshipDefMethod::SameJob, "同职业的人");
     print_menu_choice<RelationshipDefMethod>(RelationshipDefMethod::Manually, "手动设置关系（支持删除已有关系，现在是唯一删除已有关系的方式）");
 
-    int8_t rela_def_mode;
+    int rela_def_mode;
     while (true)
     {
         cin >> rela_def_mode;
@@ -392,6 +394,7 @@ inline void CliInterface::change_single_relationship_core()
                     {
                         cout << "请输入想要设置的逻辑关系（1或任何正数代表连接，0或任何负数代表不连接）" << endl;
                         cin >> logic_value;
+                        break;
                     }
                     // static_cast<bool>(int) 的行为：将所有正数转换为true，将0和所有负数转换为false
                     // 遵照操作规范

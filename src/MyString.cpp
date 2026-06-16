@@ -3,6 +3,7 @@
 //
 
 #include "../include/MyString.h"
+#include <iomanip>
 
 MyString::MyString() {
     length = 0;
@@ -74,7 +75,7 @@ std::ostream& operator<<(std::ostream& out, const MyString& source)
 std::istream& operator>>(std::istream& in, MyString& target)
 {
     char temp[1024];
-    in >> temp;
+    in >> std::setw(sizeof(temp)) >> temp; // 最多只读入1023个字符以及'\0'
     target = temp;
     return in;   
 }
