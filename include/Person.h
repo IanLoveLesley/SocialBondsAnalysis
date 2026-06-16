@@ -16,6 +16,7 @@ class Person {
     public:
     Person();
     Person(int id,const char* name,Sex sex, int age,const char* job);
+    Person(int id,MyString name,Sex sex, int age, MyString job);
     int getId() const;
     Sex getSex() const;
     int getAge() const;

@@ -16,6 +16,23 @@ MyString::MyString(const MyString &other) {
     strcpy(this->data, other.data);
 }
 
+MyString &MyString::operator=(const char* other)
+{
+    if (other == data)
+    {
+        return *this;
+    }
+    else
+    {
+        delete [] data;
+        // 依旧不包括'\0'
+
+        this->length = sizeof(other) - 1;
+        data = new char[sizeof(other)];
+        std::memcpy(data, other, sizeof(other));
+    }
+}
+
 MyString &MyString::operator=(const MyString &other) {
     if (this == &other) {
         return *this;
@@ -27,7 +44,6 @@ MyString &MyString::operator=(const MyString &other) {
         strcpy(this->data, other.data);
         return *this;
     }
-
 }
 
 inline int MyString::getLength() const {
@@ -51,4 +67,18 @@ bool MyString::operator==(const MyString& other) const{
         }
     }
     return judge;
+}
+
+std::ostream& operator<<(std::ostream& out, const MyString& source)
+{
+    out << source.data;
+    return out;
+}
+
+std::istream& operator>>(std::istream& in, MyString& target)
+{
+    char *temp;
+    in >> temp;
+    target = temp;
+    return in;   
 }

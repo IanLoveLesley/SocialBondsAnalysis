@@ -20,6 +20,14 @@ Person::Person(int id, const char *name, Sex sex, int age, const char *job) {
     this->age = age;
     this->job = job;
 }
+Person::Person(int id,MyString name,Sex sex, int age, MyString job)
+{
+    this->id = id;
+    this->name = name;
+    this->sex = sex;
+    this->age = age;
+    this->job = job;
+}
 
 int Person::getAge() const {
     return age;
@@ -39,8 +47,9 @@ Sex Person::getSex() const {
 }
 
 void Person::printInfo() const {
-    std::cout<<name.getData()<<std::endl;
+    std::cout<<name<<std::endl;
     std::cout<<sex<<std::endl;
     std::cout<<age<<std::endl;
-    std::cout<<job.getData()<<std::endl;
+    std::cout<<job<<std::endl;
 }
+
