@@ -36,12 +36,12 @@ public:
     };
     void define_relationship();
 
-    void neighbors_matrix_done() { is_neighbor.get_has_done() = true; }
+    void neighbors_matrix_prepared() { is_neighbor.get_has_done() = true; }
     // is_neighbor矩阵被改动，则is_connected矩阵自然失效
-    void neighbors_matrix_not_done() { is_neighbor.get_has_done() = is_connected.get_has_done() = false; }
+    void neighbors_matrix_unprepared() { is_neighbor.get_has_done() = is_connected.get_has_done() = false; }
 
     // 寻找整张图的连接关系，根据is_neighbor 建立 is_connected
-    inline void build_is_connected() { is_neighbor.build_connected_adjmat(is_connected); }
+    inline void build_is_connected_matrix() { is_neighbor.build_connected_adjmat(is_connected); }
 
     // 服务于图结构表示的接口： 暂定直接返回整个is_neighbor矩阵的引用
     const CurrAdjMat& get_neighbor_matrix() const { return is_neighbor; }

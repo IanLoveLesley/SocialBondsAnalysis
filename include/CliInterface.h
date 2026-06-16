@@ -14,7 +14,16 @@ public:
 
 private:
     void initialize_users();
-    void define_relationship();
+    void define_relationship(); // TODO
+
+    void print_is_connected_matrix() const;
+    // void show_diagram() const; // TODO
+
+    enum class MenuChoice : int8_t;
+    MenuChoice get_user_menu_choice(); // TODO
+
+    void change_personal_information(); // TODO
+    void change_relationship_need_rebuild_connected(); // TODO
 
     static int initialize_user_count();
 
@@ -26,8 +35,21 @@ private:
     int set_user_age_core();
     MyString set_user_job_core();
 
+    inline void print_menu_choice(MenuChoice number, MyString content);
+
 private:
     SocialNetwork social_network;
+
+    enum class MenuChoice : int8_t
+    {
+        Quit = 0,
+        PrintConnectedMatrix,
+        // ShowDiagram,
+        ChangePersonalInformation,
+        ChangeRelationship,
+        // AddUser,
+        // DeleteUser,
+    };
 };
 
 #endif // SOCIALBONDANALYSIS_CLIINTERFACE_H

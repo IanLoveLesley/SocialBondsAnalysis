@@ -5,7 +5,7 @@
 #include "../include/SocialNetwork.h"
 #include <stdexcept>
 
-// 因为矩阵还没初始化好，所以不能直接 build_is_connected()
+// 因为矩阵还没初始化好，所以不能直接 build_is_connected_matrix()
 SocialNetwork::SocialNetwork(int num_of_users_) : user_count(num_of_users_), is_neighbor(num_of_users_), is_connected(num_of_users_) {}
 
 SocialNetwork::~SocialNetwork()
@@ -32,7 +32,7 @@ bool SocialNetwork::is_users_connected(int user_0, int user_1)
 
     if (!is_connected.get_has_done())
     {
-        build_is_connected();
+        build_is_connected_matrix();
     }
 
     return is_connected.get_element(user_0, user_1);
