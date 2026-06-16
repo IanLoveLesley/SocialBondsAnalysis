@@ -22,15 +22,11 @@ MyString &MyString::operator=(const char* other)
     {
         return *this;
     }
-    else
-    {
-        delete [] data;
-        // 依旧不包括'\0'
-
-        this->length = sizeof(other) - 1;
-        data = new char[sizeof(other)];
-        std::memcpy(data, other, sizeof(other));
-    }
+    delete [] data;
+    this->length = strlen(other);
+    data = new char[length + 1];
+    strcpy(data, other);
+    return *this;
 }
 
 MyString &MyString::operator=(const MyString &other) {
@@ -46,10 +42,10 @@ MyString &MyString::operator=(const MyString &other) {
     }
 }
 
-inline int MyString::getLength() const {
+int MyString::getLength() const {
     return length;
 }
-inline const char* MyString::getData() const {
+const char* MyString::getData() const {
     return data;
 }
 
@@ -77,7 +73,7 @@ std::ostream& operator<<(std::ostream& out, const MyString& source)
 
 std::istream& operator>>(std::istream& in, MyString& target)
 {
-    char *temp;
+    char temp[1024];
     in >> temp;
     target = temp;
     return in;   

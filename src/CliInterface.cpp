@@ -167,6 +167,7 @@ CliInterface::MainMenuChoice CliInterface::get_user_menu_choice()
         print_menu_choice<MainMenuChoice>(MainMenuChoice::RedefineRelationship, "修改好友关系");
         print_menu_choice<MainMenuChoice>(MainMenuChoice::Quit, "退出");
 
+        cin >> temp;
         // 如果输入数字在目录范围之外
         if (temp < 1 || temp >= static_cast<int8_t>(MainMenuChoice::count_plus_one))
         {
@@ -284,6 +285,7 @@ void CliInterface::define_relationship_need_rebuild_connected()
     int8_t rela_def_mode;
     while (true)
     {
+        cin >> rela_def_mode;
         if (rela_def_mode < 1 || rela_def_mode >= static_cast<int8_t>(RelationshipDefMethod::count_plus_one))
         {
             cout << "选项无效，请重新输入" << endl;
@@ -291,7 +293,7 @@ void CliInterface::define_relationship_need_rebuild_connected()
         else
         {
             // 需要在除了Manually模式之外所有模式进行权限调整 （Manually内之前已经耦合了权限调整选项）
-            if (rela_def_mode != static_cast<int8_t>(rela_def_mode))
+            if (rela_def_mode != static_cast<int8_t>(RelationshipDefMethod::Manually))
             {
                 social_network.neighbors_matrix_unprepared();
             }
@@ -347,7 +349,7 @@ void CliInterface::define_relationship_need_rebuild_connected()
             }
             }
 
-            if (rela_def_mode != static_cast<int8_t>(rela_def_mode))
+            if (rela_def_mode != static_cast<int8_t>(RelationshipDefMethod::Manually))
             {
                 social_network.neighbors_matrix_prepared();
             }

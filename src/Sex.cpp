@@ -2,7 +2,7 @@
 
 #include "../include/Sex.h"
 
-inline std::ostream& operator<<(std::ostream& out, const Sex& sex)
+std::ostream& operator<<(std::ostream& out, const Sex& sex)
 {
     if (sex == Sex::FEMALE)
     {

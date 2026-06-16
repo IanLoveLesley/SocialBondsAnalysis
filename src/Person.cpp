@@ -1,8 +1,6 @@
 //
 // Created by Ian on 2026/6/3.
 //
-
-#pragma once
 #include "../include/Person.h"
 #include "../include/Sex.h"
 

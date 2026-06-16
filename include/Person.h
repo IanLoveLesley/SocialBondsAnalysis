@@ -33,5 +33,12 @@ class Person {
     void printInfo() const;
 };
 
+inline std::ostream& operator<<(std::ostream& os, const Person& person) {
+    os << "ID: " << person.getId() 
+       << ", Name: " << person.getName() 
+       << ", Age: " << person.getAge() 
+       << ", Job: " << person.getJob();
+    return os;
+}
 
 #endif //SOCIALBONDSANALYSIS_PERSON_H

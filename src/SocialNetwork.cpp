@@ -10,8 +10,7 @@ SocialNetwork::SocialNetwork(int num_of_users_) : user_count(num_of_users_), is_
 
 SocialNetwork::~SocialNetwork()
 {
-    is_neighbor.~MyAdjMat();
-    is_connected.~MyAdjMat(); // 将矩阵析构掉。我不写它是否也会被调用？
+    // 成员变量的析构函数会由编译器自动调用，不需要手动调用
 }
 
 void SocialNetwork::push_user(Person source)
