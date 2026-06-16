@@ -21,7 +21,6 @@ private:
 
 private:
     void initialize_users();
-    void define_relationship();
     void define_relationship_need_rebuild_connected();
 
     void print_is_connected_matrix() const;

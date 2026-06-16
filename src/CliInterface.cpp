@@ -130,15 +130,6 @@ void CliInterface::initialize_users()
     }
 }
 
-void CliInterface::define_relationship()
-{
-    social_network.neighbors_matrix_unprepared();
-
-    // TODO
-    // 主要是输入邻接矩阵的规则，可能需要扩展更多规则
-    social_network.neighbors_matrix_prepared(); // 最后要做的事情：使矩阵准备好
-}
-
 void CliInterface::print_is_connected_matrix() const
 {
     const CurrAdjMat &source = social_network.get_connected_matrix();
@@ -299,6 +290,12 @@ void CliInterface::define_relationship_need_rebuild_connected()
         }
         else
         {
+            // 需要在除了Manually模式之外所有模式进行权限调整 （Manually内之前已经耦合了权限调整选项）
+            if (rela_def_mode != static_cast<int8_t>(rela_def_mode))
+            {
+                social_network.neighbors_matrix_unprepared();
+            }
+
             switch (static_cast<RelationshipDefMethod>(rela_def_mode))
             {
             case RelationshipDefMethod::SameAge:
@@ -348,6 +345,11 @@ void CliInterface::define_relationship_need_rebuild_connected()
                 cout << "选项无效，请重新输入" << endl;
                 break;
             }
+            }
+
+            if (rela_def_mode != static_cast<int8_t>(rela_def_mode))
+            {
+                social_network.neighbors_matrix_prepared();
             }
         }
     }
