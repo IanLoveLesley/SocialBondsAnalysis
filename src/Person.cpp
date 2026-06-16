@@ -48,6 +48,7 @@ void Person::setName(const char* name)
 const char* Person::getJob() const {
     return job.getData();
 }
+const MyString &Person::getJob_MyString() const { return job; }
 void Person::setJob(const char* job)
 {
     this->job = job;

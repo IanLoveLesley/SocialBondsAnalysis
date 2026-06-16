@@ -4,6 +4,7 @@
 #include "SocialNetwork.h"
 #include <iostream>
 using namespace std;
+constexpr int MIN_USERS = 10;
 
 class CliInterface
 {
@@ -16,10 +17,12 @@ private:
     SocialNetwork social_network;
     enum class MainMenuChoice : int8_t;
     enum class UserInfoChoice : int8_t;
+    enum class RelationshipDefMethod : int8_t;
 
 private:
     void initialize_users();
-    void define_relationship(); // TODO
+    void define_relationship();
+    void define_relationship_need_rebuild_connected();
 
     void print_is_connected_matrix() const;
     // void show_diagram() const; // TODO
@@ -28,7 +31,7 @@ private:
 
     void print_user_info() const;
     void change_personal_information();
-    void change_relationship_need_rebuild_connected();
+    inline void change_single_relationship_core();
 
     static int initialize_user_count();
 

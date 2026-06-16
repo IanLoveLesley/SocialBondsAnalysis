@@ -1,5 +1,4 @@
 #include "..\include\CliInterface.h"
-constexpr int MIN_USERS = 10;
 
 enum class CliInterface::MainMenuChoice : int8_t
 {
@@ -7,7 +6,7 @@ enum class CliInterface::MainMenuChoice : int8_t
     // ShowDiagram,
     PrintUserInfo,
     ChangePersonalInformation,
-    ChangeRelationship,
+    RedefineRelationship,
     // AddUser,
     // DeleteUser,
     Quit,
@@ -23,13 +22,29 @@ enum class CliInterface::UserInfoChoice : int8_t
     count_plus_one
 };
 
+enum class CliInterface::RelationshipDefMethod : int8_t
+{
+    SameAge = 1,
+    AgeDifferenceWithin,
+    SameSex,
+    SameJob,
+    Manually, // 手动操作——与其他模式不同，这个是唯一支持解除关系的
+    // ClusterAlgo, // 未来拓展
+
+    count_plus_one
+};
+
 CliInterface::CliInterface() : social_network(initialize_user_count()) {}
 
 void CliInterface::run()
 {
     bool is_running = true; // 通过设置这个状态参数为false来终止实例化的进程运行
+
     initialize_users();
-    define_relationship();
+
+    cout << "初始化：请建立好友关系" << endl;
+    define_relationship_need_rebuild_connected(); // 初次定义
+
     social_network.build_is_connected_matrix();
 
     while (is_running)
@@ -59,9 +74,9 @@ void CliInterface::run()
             change_personal_information();
             break;
         }
-        case MainMenuChoice::ChangeRelationship:
+        case MainMenuChoice::RedefineRelationship:
         {
-            change_relationship_need_rebuild_connected();
+            define_relationship_need_rebuild_connected();
             social_network.build_is_connected_matrix();
             break;
         }
@@ -117,6 +132,8 @@ void CliInterface::initialize_users()
 
 void CliInterface::define_relationship()
 {
+    social_network.neighbors_matrix_unprepared();
+
     // TODO
     // 主要是输入邻接矩阵的规则，可能需要扩展更多规则
     social_network.neighbors_matrix_prepared(); // 最后要做的事情：使矩阵准备好
@@ -156,7 +173,7 @@ CliInterface::MainMenuChoice CliInterface::get_user_menu_choice()
         print_menu_choice<MainMenuChoice>(MainMenuChoice::PrintConnectedMatrix, "打印能间接转发状态的邻接矩阵");
         print_menu_choice<MainMenuChoice>(MainMenuChoice::PrintUserInfo, "打印用户信息");
         print_menu_choice<MainMenuChoice>(MainMenuChoice::ChangePersonalInformation, "修改用户信息");
-        print_menu_choice<MainMenuChoice>(MainMenuChoice::ChangeRelationship, "修改好友关系");
+        print_menu_choice<MainMenuChoice>(MainMenuChoice::RedefineRelationship, "修改好友关系");
         print_menu_choice<MainMenuChoice>(MainMenuChoice::Quit, "退出");
 
         // 如果输入数字在目录范围之外
@@ -265,7 +282,78 @@ void CliInterface::change_personal_information()
     }
 }
 
-void CliInterface::change_relationship_need_rebuild_connected()
+void CliInterface::define_relationship_need_rebuild_connected()
+{
+    print_menu_choice<RelationshipDefMethod>(RelationshipDefMethod::SameAge, "同龄人");
+    print_menu_choice<RelationshipDefMethod>(RelationshipDefMethod::AgeDifferenceWithin, "年龄差距在一定范围内的人");
+    print_menu_choice<RelationshipDefMethod>(RelationshipDefMethod::SameSex, "同性别的人");
+    print_menu_choice<RelationshipDefMethod>(RelationshipDefMethod::SameJob, "同职业的人");
+    print_menu_choice<RelationshipDefMethod>(RelationshipDefMethod::Manually, "手动设置关系（支持删除已有关系，现在是唯一删除已有关系的方式）");
+
+    int8_t rela_def_mode;
+    while (true)
+    {
+        if (rela_def_mode < 1 || rela_def_mode >= static_cast<int8_t>(RelationshipDefMethod::count_plus_one))
+        {
+            cout << "选项无效，请重新输入" << endl;
+        }
+        else
+        {
+            switch (static_cast<RelationshipDefMethod>(rela_def_mode))
+            {
+            case RelationshipDefMethod::SameAge:
+            {
+                social_network.build_relationship_according_to([this](int user_0, int user_1){ return social_network.get_user(user_0).getAge() == social_network.get_user(user_1).getAge(); });
+                break;
+            }
+            case RelationshipDefMethod::AgeDifferenceWithin:
+            {
+                int diff;
+                cout << "请输入能接受的年龄差距（包括该数本身，因此可以为0，不能为负数）" << endl;
+                while (true)
+                {
+                    cin >> diff;
+                    if (diff < 0)
+                    {
+                        cout << "无效数字，请重新输入" << endl;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                // 捕获this指针，该lambda表达式才能访问social_network
+                social_network.build_relationship_according_to([this, diff](int user_0, int user_1)
+                                                               { return diff >= (social_network.get_user(user_0).getAge() - social_network.get_user(user_1).getAge()); });
+                break;
+            }
+            case RelationshipDefMethod::SameSex:
+            {
+                social_network.build_relationship_according_to([this](int user_0, int user_1) { return social_network.get_user(user_0).getSex() == social_network.get_user(user_1).getSex(); });
+                break;
+            }
+            case RelationshipDefMethod::SameJob:
+            {
+                social_network.build_relationship_according_to([this](int user_0, int user_1) { return social_network.get_user(user_0).getJob_MyString() == social_network.get_user(user_1).getJob_MyString(); });
+                break;
+            }
+            case RelationshipDefMethod::Manually:
+            {
+                change_single_relationship_core();
+                break;
+            }
+            default:
+            {
+                // 理论上不可达
+                cout << "选项无效，请重新输入" << endl;
+                break;
+            }
+            }
+        }
+    }
+}
+
+inline void CliInterface::change_single_relationship_core()
 {
     while (true)
     {
@@ -304,7 +392,7 @@ void CliInterface::change_relationship_need_rebuild_connected()
                     // static_cast<bool>(int) 的行为：将所有正数转换为true，将0和所有负数转换为false
                     // 遵照操作规范
                     social_network.neighbors_matrix_unprepared(); // is_connected矩阵也跟着失效
-                    social_network.change_relationship(index_0, index_1, static_cast<bool>(logic_value));
+                    social_network.change_single_relationship_with_check(index_0, index_1, static_cast<bool>(logic_value));
                     social_network.neighbors_matrix_prepared();
                 }
             }

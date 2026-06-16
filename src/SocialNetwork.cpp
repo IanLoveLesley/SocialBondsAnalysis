@@ -48,7 +48,7 @@ bool SocialNetwork::is_users_neighbors(int user_0, int user_1)
     return is_neighbor.get_element(user_0, user_1);
 }
 
-void SocialNetwork::change_relationship(int a, int b, bool value)
+void SocialNetwork::change_single_relationship_with_check(int a, int b, bool value)
 {
     if (is_neighbor.get_has_done()) // 如果是已经做好的即不能修改的
     {
@@ -65,6 +65,28 @@ void SocialNetwork::change_relationship(int a, int b, bool value)
     else
     {
         is_neighbor.set_element(a, b, value);
+        is_neighbor.get_has_done() = true;
+    }
+}
+
+void SocialNetwork::build_relationship_according_to(const std::function<bool(int, int)> argument)
+{
+    if (is_neighbor.get_has_done()) // 如果是已经做好的即不能修改的
+    {
+        throw std::logic_error("不能修改不可修改的矩阵");
+    }
+    else
+    {
+        for (int i = 0; i < user_count; i++)
+        {
+            for (int j = 0; j < i; j++) // 不处理对角元（自己与自己的关系）
+            {
+                if (argument(i, j))
+                {
+                    is_neighbor.set_element(i, j, true); // 只能建立不能解除关系
+                }
+            }
+        }
         is_neighbor.get_has_done() = true;
     }
 }

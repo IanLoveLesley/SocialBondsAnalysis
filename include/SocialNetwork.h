@@ -11,6 +11,7 @@
 #include "MyString.h"
 #include "MyVector.h"
 #include "MyAdjMat.h"
+#include <functional>
 
 using CurrAdjMat = MyAdjMat<bool, true, false>; // 增加一个抽象层，便于修改和维护；同时提高代码可读性
 
@@ -31,17 +32,15 @@ public:
 
     // 按照在列表内的顺序查找
     const Person &get_user(int number) const { return user_list[number]; }
-    Person &set_user(int number) { return user_list[number];}
+    Person &set_user(int number) { return user_list[number]; }
 
     // 根据不同依据建立is_neighbor的函数
 
-    enum class Mode
-    {
-    };
-    void define_relationship();
-
     // 允许修改值与原值相等
-    void change_relationship(int a, int b, bool value);
+    void change_single_relationship_with_check(int a, int b, bool value);
+    // 利用 lambda 表达式实现由任意依据建立关系：参数是一个输出bool的函数，要求当要建立二者关系时输出为 true
+    // 两个形参分别是两个用户的索引，理论上不会出现问题
+    void build_relationship_according_to(const std::function<bool(int, int)> argument);
 
     void neighbors_matrix_prepared() { is_neighbor.get_has_done() = true; }
     // is_neighbor矩阵被改动，则is_connected矩阵自然失效
@@ -51,11 +50,11 @@ public:
     inline void build_is_connected_matrix() { is_neighbor.build_connected_adjmat(is_connected); }
 
     // 服务于图结构表示的接口： 暂定直接返回整个is_neighbor矩阵的引用
-    const CurrAdjMat& get_neighbor_matrix() const { return is_neighbor; }
-    const CurrAdjMat& get_connected_matrix() const { return is_connected; }
+    const CurrAdjMat &get_neighbor_matrix() const { return is_neighbor; }
+    const CurrAdjMat &get_connected_matrix() const { return is_connected; }
     // 不允许直接操作；只允许通过 SocialNetwork类提供的接口操作
-    CurrAdjMat& get_neighbor_matrix() = delete; 
-    CurrAdjMat& get_connected_matrix() = delete;
+    CurrAdjMat &get_neighbor_matrix() = delete;
+    CurrAdjMat &get_connected_matrix() = delete;
 
     // 因为该函数可能会要求is_neighbor矩阵生成is_connected矩阵，所以该函数末尾不写const
     bool is_users_connected(int, int);
