@@ -44,6 +44,9 @@ private:
 
     template <typename enum_type>
     inline void print_menu_choice(enum_type number, MyString content);
+
+    // 声明为静态，使其在前面用于延迟初始化的静态函数 initialize_user_count() 中也可运行
+    static int my_safe_read_int();
 };
 
 #endif // SOCIALBONDANALYSIS_CLIINTERFACE_H

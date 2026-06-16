@@ -1,4 +1,5 @@
 #include "..\include\CliInterface.h"
+#include <limits>
 
 enum class CliInterface::MainMenuChoice : int8_t
 {
@@ -102,7 +103,7 @@ int CliInterface::initialize_user_count()
 
     while (true)
     {
-        cin >> temp;
+        temp = my_safe_read_int();
         if (temp >= MIN_USERS) // (temp > 0) // 后面这个可能会换用
         {
             break;
@@ -169,8 +170,7 @@ CliInterface::MainMenuChoice CliInterface::get_user_menu_choice()
         print_menu_choice<MainMenuChoice>(MainMenuChoice::RedefineRelationship, "修改好友关系");
         print_menu_choice<MainMenuChoice>(MainMenuChoice::Quit, "退出");
 
-        cin >> temp;
-        // 如果输入数字在目录范围之外
+        temp = my_safe_read_int();// 如果输入数字在目录范围之外
         if (temp < 1 || temp >= static_cast<int8_t>(MainMenuChoice::count_plus_one))
         {
             cout << "选项无效，请重新输入" << endl;
@@ -189,7 +189,7 @@ void CliInterface::print_user_info() const
     {
         cout << "请输入要查询的用户的编号（从1开始，不超过用户总数）" << endl;
         int temp;
-        cin >> temp;
+        temp = my_safe_read_int();
         temp--; // 改为计算机习惯的数字
         if (temp < 0 || temp >= social_network.get_user_count())
         {
@@ -208,8 +208,7 @@ void CliInterface::change_personal_information()
     while (true)
     {
         cout << "请输入要更改的用户的编号（从1开始，不超过用户总数）" << endl;
-        int index;
-        cin >> index;
+        int index = my_safe_read_int();
         index--; // 改为计算机习惯的数字
         if (index < 0 || index >= social_network.get_user_count())
         {
@@ -226,8 +225,7 @@ void CliInterface::change_personal_information()
                 print_menu_choice<UserInfoChoice>(UserInfoChoice::Age, "年龄");
                 print_menu_choice<UserInfoChoice>(UserInfoChoice::Job, "职业");
 
-                int info;
-                cin >> info;
+                int info = my_safe_read_int();
                 if (info < 0 || info >= static_cast<int8_t>(UserInfoChoice::count_plus_one))
                 {
                     cout << "数字无效，请重新输入" << endl;
@@ -287,7 +285,7 @@ void CliInterface::define_relationship_need_rebuild_connected()
     int rela_def_mode;
     while (true)
     {
-        cin >> rela_def_mode;
+        rela_def_mode = my_safe_read_int();
         if (rela_def_mode < 1 || rela_def_mode >= static_cast<int8_t>(RelationshipDefMethod::count_plus_one))
         {
             cout << "选项无效，请重新输入" << endl;
@@ -304,7 +302,8 @@ void CliInterface::define_relationship_need_rebuild_connected()
             {
             case RelationshipDefMethod::SameAge:
             {
-                social_network.build_relationship_according_to([this](int user_0, int user_1){ return social_network.get_user(user_0).getAge() == social_network.get_user(user_1).getAge(); });
+                social_network.build_relationship_according_to([this](int user_0, int user_1)
+                                                               { return social_network.get_user(user_0).getAge() == social_network.get_user(user_1).getAge(); });
                 break;
             }
             case RelationshipDefMethod::AgeDifferenceWithin:
@@ -313,7 +312,7 @@ void CliInterface::define_relationship_need_rebuild_connected()
                 cout << "请输入能接受的年龄差距（包括该数本身，因此可以为0，不能为负数）" << endl;
                 while (true)
                 {
-                    cin >> diff;
+                    diff = my_safe_read_int();
                     if (diff < 0)
                     {
                         cout << "无效数字，请重新输入" << endl;
@@ -330,12 +329,14 @@ void CliInterface::define_relationship_need_rebuild_connected()
             }
             case RelationshipDefMethod::SameSex:
             {
-                social_network.build_relationship_according_to([this](int user_0, int user_1) { return social_network.get_user(user_0).getSex() == social_network.get_user(user_1).getSex(); });
+                social_network.build_relationship_according_to([this](int user_0, int user_1)
+                                                               { return social_network.get_user(user_0).getSex() == social_network.get_user(user_1).getSex(); });
                 break;
             }
             case RelationshipDefMethod::SameJob:
             {
-                social_network.build_relationship_according_to([this](int user_0, int user_1) { return social_network.get_user(user_0).getJob_MyString() == social_network.get_user(user_1).getJob_MyString(); });
+                social_network.build_relationship_according_to([this](int user_0, int user_1)
+                                                               { return social_network.get_user(user_0).getJob_MyString() == social_network.get_user(user_1).getJob_MyString(); });
                 break;
             }
             case RelationshipDefMethod::Manually:
@@ -364,8 +365,7 @@ inline void CliInterface::change_single_relationship_core()
     while (true)
     {
         cout << "请输入第一个用户的编号（从1开始，不超过用户总数）" << endl;
-        int index_0;
-        cin >> index_0;
+        int index_0 = my_safe_read_int();
         index_0--; // 改为计算机习惯的数字
         if (index_0 < 0 || index_0 >= social_network.get_user_count())
         {
@@ -376,8 +376,7 @@ inline void CliInterface::change_single_relationship_core()
             while (true)
             {
                 cout << "请输入第二个用户的编号（与第一个用户不同；从1开始，不超过用户总数）" << endl;
-                int index_1;
-                cin >> index_1;
+                int index_1 = my_safe_read_int();
                 index_1--; // 改为计算机习惯的数字
                 if (index_1 < 0 || index_1 >= social_network.get_user_count())
                 {
@@ -393,7 +392,7 @@ inline void CliInterface::change_single_relationship_core()
                     while (true)
                     {
                         cout << "请输入想要设置的逻辑关系（1或任何正数代表连接，0或任何负数代表不连接）" << endl;
-                        cin >> logic_value;
+                        logic_value = my_safe_read_int();
                         break;
                     }
                     // static_cast<bool>(int) 的行为：将所有正数转换为true，将0和所有负数转换为false
@@ -410,8 +409,7 @@ inline void CliInterface::change_single_relationship_core()
 int CliInterface::set_user_id_core()
 {
     cout << "请设置用户ID" << endl;
-    int temp;
-    cin >> temp;
+    int temp = my_safe_read_int();
     return temp;
 }
 
@@ -428,8 +426,7 @@ Sex CliInterface::set_user_sex_core()
     while (true)
     {
         cout << "请设置用户性别（f代表女性，m代表男性）" << endl;
-        char temp;
-        cin >> temp;
+        char temp = static_cast<char>(my_safe_read_int());
         if (temp == 'f')
         {
             return Sex::FEMALE;
@@ -452,7 +449,7 @@ int CliInterface::set_user_age_core()
     int temp;
     while (true)
     {
-        cin >> temp;
+        temp = my_safe_read_int();
         if (temp >= 0)
         {
             break;
@@ -477,4 +474,24 @@ template <typename enum_type>
 inline void CliInterface::print_menu_choice(enum_type number, MyString content)
 {
     cout << static_cast<int>(number) << ": " << content << endl;
+}
+
+int CliInterface::my_safe_read_int()
+{
+    int temp;
+    while (true)
+    {
+        cin >> temp;
+        if (cin.fail())
+        {
+            cin.clear(); // 清楚“出错”标志
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // 清除缓冲区所有内容，直到遇见换行符
+            cout << "输入非数字，请重新输入！" << endl;
+        }
+        else
+        {
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // 仍旧清楚缓冲区，防止数字后面跟的非数字脏数据
+            return temp;
+        }
+    }
 }
